@@ -1,0 +1,41 @@
+#define pin35 35
+#define led 2
+#define trig 32
+#define echo 33
+
+int distancia = 0;
+int ultrasonido(int echopin,int trigpin){
+  delay(50);
+digitalWrite(trig,HIGH);
+delayMicroseconds(10);
+digitalWrite(trig,LOW);
+return pulseIn (echopin, HIGH)/58.0;
+}
+
+void setup() {
+  pinMode(pin35, INPUT);
+  pinMode(led,OUTPUT);
+  pinMode(echo,INPUT);
+  pinMode(trig,OUTPUT);
+  digitalWrite(trig,LOW);
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  
+ float voltaje = analogRead(pin35);
+ if (voltaje>=200 && voltaje <=500){
+ digitalWrite(led, HIGH);
+ delay(500);
+ }
+ else{
+   digitalWrite(led, LOW);
+    delay(500);
+ }
+  Serial.println("Voltaje de la fotoresistencia: ");
+Serial.println(voltaje);
+  distancia = ultrasonido(echo, trig);
+  Serial.print("distancia en centimetros: ");
+  Serial.println(distancia);
+}
