@@ -25,17 +25,31 @@ void setup() {
 void loop() {
   
  float voltaje = analogRead(pin35);
- if (voltaje>=200 && voltaje <=500){
+ if (voltaje>=2800){
  digitalWrite(led, HIGH);
- delay(500);
+ delay(1500);
+  Serial.println("Regando la planta");
  }
- else{
+ else if (voltaje<500){
    digitalWrite(led, LOW);
-    delay(500);
+    delay(1500);
+     Serial.println("Actualmente es de noche");
+ }
+ else {
+   digitalWrite(led, LOW);
+    delay(1500);
  }
   Serial.println("Voltaje de la fotoresistencia: ");
 Serial.println(voltaje);
   distancia = ultrasonido(echo, trig);
   Serial.print("distancia en centimetros: ");
   Serial.println(distancia);
+  if (distancia>=8){
+ delay(1500);
+  Serial.println("Recarga el agua");
+ }
+ else{
+    delay(1500);
+     Serial.println("Actualmente hay agua suficiente");
+ }
 }
