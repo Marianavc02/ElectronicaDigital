@@ -1,55 +1,59 @@
 #define pin35 35
-#define led 2
+#define rele 2
 #define trig 32
 #define echo 33
+#define humedad 34
 
 int distancia = 0;
-int ultrasonido(int echopin,int trigpin){
+int ultrasonido(int echopin, int trigpin) {
   delay(50);
-digitalWrite(trig,HIGH);
-delayMicroseconds(10);
-digitalWrite(trig,LOW);
-return pulseIn (echopin, HIGH)/58.0;
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  return pulseIn(echopin, HIGH) / 58.0;
 }
 
 void setup() {
   pinMode(pin35, INPUT);
-  pinMode(led,OUTPUT);
-  pinMode(echo,INPUT);
-  pinMode(trig,OUTPUT);
-  digitalWrite(trig,LOW);
+  pinMode(rele, OUTPUT);
+  pinMode(echo, INPUT);
+  pinMode(trig, OUTPUT);
+  pinMode(humedad, INPUT);
+  digitalWrite(trig, LOW);
   Serial.begin(9600);
-
 }
 
 void loop() {
-  
- float voltaje = analogRead(pin35);
- if (voltaje>=2800){
- digitalWrite(led, HIGH);
- delay(1500);
-  Serial.println("Regando la planta");
- }
- else if (voltaje<500){
-   digitalWrite(led, LOW);
+  float valorHumedad = analogRead(humedad);
+  float voltaje = analogRead(pin35);
+  if (voltaje >= 2800 && valorHumedad > 2000) {
+    digitalWrite(rele, HIGH);
     delay(1500);
-     Serial.println("Actualmente es de noche");
- }
- else {
-   digitalWrite(led, LOW);
+    Serial.println("Regando la planta");
+  } else if (voltaje > 2800 && valorHumedad < 2000) {
+    digitalWrite(rele, LOW);
     delay(1500);
- }
+    Serial.println("Actualmente la planta esta humeda");
+  } else if (voltaje < 500) {
+    digitalWrite(rele, LOW);
+    delay(1500);
+    Serial.println("Actualmente es de noche");
+  } else {
+    digitalWrite(rele, LOW);
+    delay(1500);
+  }
   Serial.println("Voltaje de la fotoresistencia: ");
-Serial.println(voltaje);
+  Serial.println(voltaje);
+  Serial.println("valor de humedad");
+  Serial.println(valorHumedad);
   distancia = ultrasonido(echo, trig);
   Serial.print("distancia en centimetros: ");
   Serial.println(distancia);
-  if (distancia>=8){
- delay(1500);
-  Serial.println("Recarga el agua");
- }
- else{
+  if (distancia >= 8) {
     delay(1500);
-     Serial.println("Actualmente hay agua suficiente");
- }
+    Serial.println("Recarga el agua");
+  } else {
+    delay(1500);
+    Serial.println("Actualmente hay agua suficiente");
+  }
 }
